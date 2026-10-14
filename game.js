@@ -2,7 +2,12 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const canvas = $('table');
-  const ctx = canvas.getContext('2d', { alpha: false });
+  let ctx = canvas.getContext('2d', { alpha: false });
+  // Cache the ornate static table instead of repainting it during every shot.
+  const tableCache=document.createElement('canvas');
+  tableCache.width=1000;tableCache.height=560;
+  const backgroundCtx=tableCache.getContext('2d',{alpha:false});
+  let cacheKey='',lastPaint=0;
   const LOGICAL_WIDTH=1000, LOGICAL_HEIGHT=560;
   const PI = Math.PI, TWO_PI = PI * 2;
   const T = { L: 74, R: 926, U: 73, D: 487, head: 286, r: 11.1 };
@@ -23,7 +28,7 @@
   let pendingAI = null, generation = 0, lastAIHeartbeat = 0;
   const state = {
     screen:'menu', difficulty:'medium', phase:'idle', turn:'human', group:null,
-    balls:[], aim:{x:650,y:270}, power:58, called:null,
+    balls:[], aim:{x:650,y:270}, power:12, called:null,
     special:{1:null,15:null}, shot:null, dragging:false, message:'', finished:false,shots:{human:0,ai:0}
   };
   const alive = id => state.balls.find(b => b.id === id && !b.out);
@@ -72,10 +77,10 @@
     clearComputer();
     state.screen='game';state.phase='idle';state.turn='human';state.group=null;state.called=null;
     state.special={1:null,15:null};state.shot=null;state.aim={x:685,y:280};state.finished=false;
-    state.power=58;state.dragging=false;state.shots={human:0,ai:0};frameTime=0;accumulator=0;
-    $('power').value='58';$('powerText').textContent='58%';
+    state.power=12;state.dragging=false;state.shots={human:0,ai:0};frameTime=0;accumulator=0;cacheKey='';
+    resetPull();
     createRack();$('menuScreen').hidden=true;$('gameScreen').hidden=false;$('resultModal').hidden=true;document.body.classList.add('playing-mode');$('rotateOverlay').hidden=false;
-    updateMessage('دورك! المس الطاولة لتحديد اتجاه الضربة، ثم اضغط «اضرب الكرة».');
+    updateMessage('صوّب من الطاولة، بعدها اسحب مسطرة القوة للأسفل واترك حتى تضرب.');
     updateUI();resizeCanvas();requestAnimationFrame(resizeCanvas);draw();
     window.scrollTo({top:0,behavior:'instant'});
   }
@@ -109,8 +114,8 @@
       }
     }
     const canShoot=state.screen==='game'&&state.turn==='human'&&state.phase==='idle'&&!state.finished;
-    $('shootBtn').disabled=!canShoot;
-    $('power').disabled=!canShoot;
+    $('pullRail').classList.toggle('disabled',!canShoot);
+    $('pullRail').setAttribute('aria-disabled',String(!canShoot));
     const calling=canShoot && legalTargets('human').some(b=>b.id===8);
     $('callArea').hidden=!calling;
     if (calling) updateCallButtons();
@@ -143,7 +148,7 @@
   }
   function shootHuman() {
     if(state.turn!=='human'||state.phase!=='idle')return;
-    if(legalTargets('human').some(b=>b.id===8)&&state.called===null){updateMessage('اختار جيب التوب أولاً قبل ضرب السوداء.','⚠️');return;}
+    if(legalTargets('human').some(b=>b.id===8)&&state.called===null){updateMessage('اختار جيب التوب أولاً ثم اسحب المسطرة واتركها.','⚠️');return;}
     const cue=alive(0);if(!cue)return;
     if(!beginShot(state.aim.x-cue.x,state.aim.y-cue.y,state.power))updateMessage('اختار اتجاه الضربة على الطاولة.','⚠️');
   }
@@ -356,7 +361,7 @@
   canvas.addEventListener('pointerup',()=>{
     if(state.dragging&&state.phase==='placing'){
       state.phase='idle';const c=alive(0);state.aim={x:c.x+200,y:c.y};
-      updateMessage('تم وضع البيضاء خلف الخط. صوب واضرب.','🎯');updateUI();
+      updateMessage('تم وضع البيضاء خلف الخط. صوب واسحب المسطرة واتركها.','🎯');updateUI();
     }
     state.dragging=false;
   });
@@ -492,9 +497,19 @@
     ctx.strokeStyle='#bed3d3';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(c.x-dx*28,c.y-dy*28);ctx.lineTo(c.x-dx*38,c.y-dy*38);ctx.stroke();
     ctx.restore();
   }
+  function drawCachedTable(){
+    const pocketCall=state.turn==='human'&&state.phase==='idle'&&legalTargets('human').some(b=>b.id===8);
+    const mode=state.phase==='placing'?'placing':pocketCall?'call-'+state.called:'normal';
+    if(mode!==cacheKey){
+      const displayCtx=ctx;
+      ctx=backgroundCtx;
+      try{drawTable();cacheKey=mode;}finally{ctx=displayCtx;}
+    }
+    ctx.drawImage(tableCache,0,0);
+  }
   function draw() {
     if(state.screen!=='game')return;
-    drawTable();
+    drawCachedTable();
     for(const b of state.balls)if(!b.out)ballPaint(b);
     drawGuide();
     if(state.phase==='placing'&&state.turn==='human'){
@@ -505,14 +520,15 @@
     requestAnimationFrame(frame);
     if(state.screen!=='game')return;
     if(state.turn==='ai'&&state.phase==='idle'&&!state.finished&&!pendingAI && t-lastAIHeartbeat>1200){ lastAIHeartbeat=t;queueAI(); }
-    const dt=Math.min(48,t-(frameTime||t));frameTime=t;
+    const dt=Math.min(55,t-(frameTime||t));frameTime=t;
     if(state.phase==='moving'){
       accumulator+=dt;let n=0;
       while(accumulator>=1000/60 && n++<4 && state.phase==='moving'){
         accumulator-=1000/60;physicsStep();
       }
+      // 40fps visual update, 60Hz physics: much less GPU/Canvas overhead on phones.
+      if(t-lastPaint>=25 || state.phase!=='moving'){draw();lastPaint=t;}
     }else accumulator=0;
-    draw();
   }
   function resizeCanvas(){
     const wrap=canvas.parentElement;
@@ -521,7 +537,8 @@
     const pxScale=Math.max(.12,displayScale);
     canvas.style.width=Math.round(LOGICAL_WIDTH*pxScale)+'px';
     canvas.style.height=Math.round(LOGICAL_HEIGHT*pxScale)+'px';
-    const dpi=Math.min(3,Math.max(1,window.devicePixelRatio||1));
+    // Allocate only the pixels the phone displays; huge 3000px canvases caused lag.
+    const dpi=Math.min(1.7,Math.max(.68,pxScale*Math.min(2,window.devicePixelRatio||1)));
     const newWidth=Math.round(LOGICAL_WIDTH*dpi),newHeight=Math.round(LOGICAL_HEIGHT*dpi);
     if(canvas.width!==newWidth||canvas.height!==newHeight){
       canvas.width=newWidth;canvas.height=newHeight;
@@ -544,8 +561,49 @@
   $('againBtn').addEventListener('click',resetGame);
   $('menuBtn').addEventListener('click',toMenu);
   $('backBtn').addEventListener('click',toMenu);
-  $('shootBtn').addEventListener('click',shootHuman);
-  $('power').addEventListener('input',e=>{state.power=+e.target.value;$('powerText').textContent=state.power+'%';});
+  // Pull down and release to shoot. Touch and mouse share the same pointer-capture path.
+  const rail=$('pullRail'),track=$('pullTrack'),grip=$('pullGrip'),fill=$('pullFill');
+  const pull={pointer:null,amount:0};
+  function setPull(amount){
+    pull.amount=clamp(amount,0,1);
+    const percent=Math.round(pull.amount*100);
+    grip.style.top=percent+'%';fill.style.height=percent+'%';
+    state.power=Math.round(12+pull.amount*88);
+    $('powerText').textContent=pull.amount>0?state.power+'%':'اسحب';
+    rail.setAttribute('aria-valuenow',String(state.power));
+  }
+  function resetPull(){setPull(0);}
+  function setPullFromEvent(e){
+    const r=track.getBoundingClientRect();
+    if(!r.height)return;
+    setPull((e.clientY-r.top)/r.height);
+  }
+  function canPull(){return state.screen==='game'&&state.turn==='human'&&state.phase==='idle'&&!state.finished;}
+  rail.addEventListener('pointerdown',e=>{
+    if(!canPull()||pull.pointer!==null)return;
+    e.preventDefault();pull.pointer=e.pointerId;
+    rail.classList.add('pulling');
+    try{rail.setPointerCapture(e.pointerId);}catch(_){}
+    setPullFromEvent(e);
+  });
+  rail.addEventListener('pointermove',e=>{if(pull.pointer===e.pointerId){e.preventDefault();setPullFromEvent(e);}});
+  rail.addEventListener('pointerup',e=>{
+    if(pull.pointer!==e.pointerId)return;
+    e.preventDefault();setPullFromEvent(e);
+    const fire=pull.amount>=.07&&canPull();
+    pull.pointer=null;rail.classList.remove('pulling');
+    if(fire)shootHuman();
+    else if(canPull())updateMessage('اسحب المسطرة للأسفل أكثر ثم اترك حتى تسدد.','🎯');
+    resetPull();
+  });
+  rail.addEventListener('pointercancel',e=>{if(pull.pointer===e.pointerId){pull.pointer=null;rail.classList.remove('pulling');resetPull();}});
+  rail.addEventListener('lostpointercapture',()=>{if(pull.pointer!==null){pull.pointer=null;rail.classList.remove('pulling');resetPull();}});
+  rail.addEventListener('keydown',e=>{
+    if(!canPull())return;
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();setPull(Math.min(1,pull.amount+.08));}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();setPull(Math.max(0,pull.amount-.08));}
+    else if((e.key==='Enter'||e.key===' ')&&pull.amount>=.07){e.preventDefault();shootHuman();resetPull();}
+  });
   $('soundBtn').addEventListener('click',()=>{muted=!muted;$('soundBtn').textContent=muted?'♪̸':'♫';$('soundBtn').setAttribute('aria-label',muted?'تشغيل الصوت':'كتم الصوت');});
   $('rotateBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();if(screen.orientation?.lock)await screen.orientation.lock('landscape');}catch(_){updateMessage('دوّر الموبايل للعرض يدوياً إذا ما يدعم جهازك القفل التلقائي.','📱')}requestAnimationFrame(resizeCanvas)});
   $('fullscreenBtn').addEventListener('click',async()=>{
