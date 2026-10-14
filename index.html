@@ -8,8 +8,8 @@
   <title>بريالدو العراقي | تحدّي الكمبيوتر</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="style.css?v=0.4">
-  <script src="game.js?v=0.4" defer></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
 </head>
 <body>
   <div class="bg-orb orb-a"></div>
@@ -120,11 +120,12 @@
 
       <div class="arena-layout">
         <aside class="left-rail chrome-card">
-          <div class="rail-title">POWER</div>
-          <div class="vertical-power-wrap">
-            <input id="power" type="range" min="12" max="100" value="58" aria-label="قوة الضربة">
+          <div class="rail-title">القوة</div>
+          <div id="pullRail" class="pull-rail" role="slider" tabindex="0" aria-label="مسطرة قوة التسديد: اسحب للأسفل واترك لتسديد الكرة" aria-valuemin="12" aria-valuemax="100" aria-valuenow="12" aria-disabled="false">
+            <div id="pullTrack" class="pull-track"><div id="pullFill" class="pull-fill"></div><div id="pullGrip" class="pull-grip">▼</div></div>
+            <span class="pull-hint">اسحب ↓<br>واترك</span>
           </div>
-          <div id="powerText" class="power-readout">58%</div>
+          <div id="powerText" class="power-readout">اسحب</div>
         </aside>
 
         <main class="arena-center">
@@ -143,10 +144,10 @@
               <div id="statusIcon" class="status-icon">🎯</div>
               <div>
                 <strong>حالة اللعب</strong>
-                <p id="statusText">حرّك إصبعك على الطاولة حتى تصوّب.</p>
+                <p id="statusText">حرّك إصبعك للتصويب، ثم اسحب المسطرة واتركها للتسديد.</p>
               </div>
             </div>
-            <button id="shootBtn" class="action-btn shot-btn" type="button">اضرب الكرة</button>
+            <div class="shot-help">⇣ اسحب مسطرة القوة واتركها حتى تضرب</div>
           </div>
         </main>
 
