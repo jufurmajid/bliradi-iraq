@@ -3,66 +3,183 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#090e12">
-  <meta name="description" content="بريالدو العراقي — لعبة بليارد بالقوانين العراقية ضد الكمبيوتر. تلعب من متصفحك على الموبايل.">
+  <meta name="theme-color" content="#10182a">
+  <meta name="description" content="بريالدو العراقي — نسخة متصفح احترافية بطور لاعب ضد الكمبيوتر وقوانين عراقية.">
   <title>بريالدو العراقي | تحدّي الكمبيوتر</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
   <script src="game.js" defer></script>
 </head>
 <body>
-<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-<div class="app">
-  <header class="site-header">
-    <div class="brand"><div class="brand-icon"><span>8</span></div><div><strong>بريالدو <em>العراقي</em></strong><small>IRAQI BILLIARDS CLUB</small></div></div>
-    <div class="header-tools"><span class="edition">الإصدار 0.2 <i></i> تجريبي</span><button type="button" id="soundBtn" class="icon-btn" title="تشغيل أو كتم الصوت" aria-label="كتم الصوت">♫</button></div>
-  </header>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <section id="menuScreen" class="screen menu-screen">
+    <div class="menu-topbar">
+      <div class="brand-box">
+        <div class="brand-ball">8</div>
+        <div>
+          <strong>بريالدو العراقي</strong>
+          <small>IRAQI BRIYALDO</small>
+        </div>
+      </div>
+      <button type="button" id="soundBtn" class="icon-btn" aria-label="كتم الصوت">♫</button>
+    </div>
 
-  <main>
-    <section id="menuScreen" class="menu-screen">
-      <div class="menu-grid">
-        <div class="hero-copy">
-          <div class="eyebrow"><span></span> THE IRAQI WAY TO PLAY</div>
-          <h1>اللعبة إلها<br><span>قوانين أهلها.</span></h1>
-          <p>البريالدو العراقي بطاولته الخضراء، وخط الفاول، والكرات الخاصة، والتوب للسوداء. تحدَّ الكمبيوتر وجرب النسخة الجديدة.</p>
-          <div class="menu-panel">
-            <div class="panel-top"><div class="mode-icon">🤖</div><div><b>لاعب ضد الكمبيوتر</b><small>ابدأ فوراً، بدون حساب أو إنترنت</small></div><div class="available-dot" title="متاح"></div></div>
-            <label class="select-title" for="difficulty">مستوى المنافس</label>
-            <div class="difficulty-options" role="group" aria-label="مستوى الكمبيوتر">
-              <button class="difficulty" type="button" data-level="easy">سهل</button><button class="difficulty chosen" type="button" data-level="medium">متوسط</button><button class="difficulty" type="button" data-level="hard">محترف</button>
+    <div class="menu-wrap">
+      <div class="menu-copy card-glass">
+        <span class="menu-kicker">لعبة بليارد عراقية بقوانين خاصة</span>
+        <h1>ادخل مباراة <span>احترافية</span><br> ضد الكمبيوتر</h1>
+        <p>
+          شاشة رئيسية مرتبة، ثم تنتقل إلى ساحة لعب كاملة شبيهة بألعاب البليارد المعروفة،
+          مع خط الفاول، الكرتين 1 و15، والتوب للسوداء.
+        </p>
+
+        <div class="difficulty-card">
+          <div class="difficulty-head">
+            <div>
+              <b>اختر مستوى الخصم</b>
+              <small>كلما ارتفع المستوى صار التصويب أدق</small>
             </div>
-            <button type="button" class="btn primary start-game" id="startBtn">ابدأ المباراة <span>←</span></button>
-            <p class="menu-note">نسخة أولية: قوانين توزيع المجموعات واستمرار الدور قابلة للتعديل حسب ملاحظاتك.</p>
+            <span class="status-chip">متاح الآن</span>
           </div>
-          <div class="features"><span>✦ بدون تحميل</span><span>✦ تحكم باللمس</span><span>✦ قوانين عراقية</span></div>
+          <div class="difficulty-options" role="group" aria-label="مستوى الكمبيوتر">
+            <button class="difficulty" type="button" data-level="easy">سهل</button>
+            <button class="difficulty chosen" type="button" data-level="medium">متوسط</button>
+            <button class="difficulty" type="button" data-level="hard">محترف</button>
+          </div>
+          <button type="button" class="action-btn start-game" id="startBtn">ابدأ المباراة</button>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <div class="poster"><div class="poster-grid"></div><div class="poster-label">EST. 2026 <span>🇮🇶</span></div><div class="poster-table"><div class="poster-pocket p1"></div><div class="poster-pocket p2"></div><div class="poster-pocket p3"></div><div class="poster-pocket p4"></div><div class="poster-pocket p5"></div><div class="poster-pocket p6"></div><div class="poster-headline">B<span>R</span>IYALDO</div><div class="poster-ball ball-eight">8</div><div class="poster-ball ball-one">1</div><div class="poster-ball ball-fifteen">15</div><div class="poster-cue"></div></div><div class="poster-bottom"><span>01 / 15</span><span>PLAY THE ORIGINAL</span></div></div>
-        </div>
-      </div>
-    </section>
 
-    <section id="gameScreen" class="game-screen" hidden>
-      <div class="game-top">
-        <div class="game-heading"><button id="backBtn" class="icon-btn back-btn" type="button" title="العودة للقائمة" aria-label="القائمة">⌂</button><div><strong>مباراة ودية</strong><small>أنت ضد الكمبيوتر · قوانين عراقية</small></div></div>
-        <div class="game-actions"><span id="matchState" class="live-pill"><i></i> المباراة جارية</span><button id="resetBtn" type="button" class="btn subtle">↻ مباراة جديدة</button></div>
+        <div class="menu-features">
+          <span>🎱 طاولة كاملة</span>
+          <span>📱 مناسب للموبايل</span>
+          <span>⚖️ قوانين عراقية</span>
+        </div>
       </div>
-      <div class="scoreboard">
-        <div id="humanPanel" class="competitor current"><div class="avatar human-avatar">أ</div><div class="competitor-info"><strong>إنت <span class="active-indicator">دورك</span></strong><small id="humanGroup">لم تتحدد المجموعة</small><div id="humanBalls" class="ball-row"></div></div></div>
-        <div class="versus"><span>VS</span><small id="turnText">إنت تبدأ</small></div>
-        <div id="botPanel" class="competitor"><div class="avatar bot-avatar">AI</div><div class="competitor-info"><strong>الكمبيوتر <span class="active-indicator">يلعب</span></strong><small id="botGroup">لم تتحدد المجموعة</small><div id="botBalls" class="ball-row"></div></div></div>
+
+      <div class="menu-preview card-glass" aria-hidden="true">
+        <div class="preview-scorebar">
+          <div class="preview-player left">
+            <span>Player 1</span>
+            <div class="preview-dots">
+              <i></i><i></i><i></i><i></i><i></i><i class="colored c-red"></i><i class="colored c-white"></i>
+            </div>
+          </div>
+          <div class="preview-center-badge">8</div>
+          <div class="preview-player right">
+            <span>Computer</span>
+            <div class="preview-dots">
+              <i class="colored c-gold"></i><i class="colored c-green"></i><i class="colored c-orange"></i><i class="colored c-purple"></i><i class="colored c-red"></i><i class="colored c-blue"></i><i></i>
+            </div>
+          </div>
+        </div>
+        <div class="preview-table-frame">
+          <div class="preview-power"></div>
+          <div class="preview-side-rack"></div>
+          <div class="preview-table">
+            <span class="pocket p1"></span><span class="pocket p2"></span><span class="pocket p3"></span>
+            <span class="pocket p4"></span><span class="pocket p5"></span><span class="pocket p6"></span>
+            <span class="ball cue"></span>
+            <span class="ball black"></span>
+            <span class="ball red"></span>
+            <span class="ball purple"></span>
+            <span class="ball orange"></span>
+            <span class="cue-stick"></span>
+          </div>
+        </div>
       </div>
-      <div class="play-area">
-        <div class="table-shell"><div class="table-glow"></div><canvas id="table" width="1000" height="560" aria-label="طاولة البليارد، انقر أو اسحب لتغيير اتجاه التصويب؛ عند فاول البيضاء حرّكها خلف الخط"></canvas><div class="table-shine"></div></div>
-        <div class="game-status"><div class="status-symbol" id="statusIcon">🎯</div><div id="statusText" role="status" aria-live="polite">حرّك إصبعك على الطاولة حتى تصوّب.</div><span class="rotate-notice">↻ لف الموبايل بالعرض لرؤية أوضح</span></div>
-        <div id="callArea" class="call-area" hidden><div><b>🎱 اختار التوب</b><small>اختار الجيب الذي تريد إدخال السوداء فيه قبل الضربة</small></div><div class="pocket-buttons" id="pocketButtons"></div></div>
-        <div class="control-bar"><div class="control-label"><label for="power">قوة الضربة <span id="powerText">58%</span></label><small>اسحب المؤشر للتحكم بالقوة</small></div><div class="power-wrap"><span>خفيف</span><input id="power" type="range" min="12" max="100" value="58" aria-label="قوة الضربة"><span>قوي</span></div><button id="shootBtn" class="btn primary shoot-btn" type="button"><span class="shoot-icon">➤</span> اضرب الكرة</button></div>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen game-screen" hidden>
+    <div class="game-shell">
+      <header class="game-hud-top">
+        <button id="backBtn" class="menu-launcher" type="button" aria-label="العودة للقائمة">☰</button>
+
+        <div id="humanPanel" class="player-card current">
+          <div class="player-name">Player 1</div>
+          <small id="humanGroup">لم تتحدد المجموعة</small>
+          <div id="humanBalls" class="ball-strip"></div>
+        </div>
+
+        <div class="center-score-card">
+          <div id="matchState" class="match-chip">المباراة جارية</div>
+          <div class="center-eight">8</div>
+          <small id="turnText">إنت تبدأ</small>
+        </div>
+
+        <div id="botPanel" class="player-card">
+          <div class="player-name">Computer</div>
+          <small id="botGroup">لم تتحدد المجموعة</small>
+          <div id="botBalls" class="ball-strip"></div>
+        </div>
+
+        <button id="fullscreenBtn" class="ball-action light" type="button" aria-label="ملء الشاشة">⛶</button>
+      </header>
+
+      <div class="arena-layout">
+        <aside class="left-rail chrome-card">
+          <div class="rail-title">POWER</div>
+          <div class="vertical-power-wrap">
+            <input id="power" type="range" min="12" max="100" value="58" aria-label="قوة الضربة">
+          </div>
+          <div id="powerText" class="power-readout">58%</div>
+        </aside>
+
+        <main class="arena-center">
+          <div class="table-frame chrome-card">
+            <div class="table-inner">
+              <canvas id="table" width="1000" height="560" aria-label="طاولة البليارد"></canvas>
+            </div>
+          </div>
+
+          <div id="callArea" class="call-area" hidden>
+            <div class="call-header"><b>🎱 اختار جيب التوب</b><small>اضغط على الجيب قبل تسديد السوداء</small></div>
+            <div class="pocket-buttons" id="pocketButtons"></div>
+          </div>
+          <div class="bottom-hud">
+            <div class="status-card chrome-card">
+              <div id="statusIcon" class="status-icon">🎯</div>
+              <div>
+                <strong>حالة اللعب</strong>
+                <p id="statusText">حرّك إصبعك على الطاولة حتى تصوّب.</p>
+              </div>
+            </div>
+            <button id="shootBtn" class="action-btn shot-btn" type="button">اضرب الكرة</button>
+          </div>
+        </main>
+
+        <aside class="right-rail chrome-card">
+          <div class="rail-title">INFO</div>
+          <div class="assist-box">
+            <span class="assist-label">IRAQI</span>
+            <p>1 و15 للوسط فقط</p>
+            <p>البيضاء وراء الخط عند سقوطها</p>
+          </div>
+          <button id="resetBtn" type="button" class="subtle-btn wide-btn">إعادة المباراة</button>
+        </aside>
       </div>
-      <div class="below-game"><button id="fullscreenBtn" class="btn subtle" type="button">⛶ ملء الشاشة</button><span>ضربة نظيفة، لعب عراقي أصيل</span></div>
-    </section>
-    <details class="rules-card"><summary>📖 قوانين البريالدو العراقي في هذه النسخة <span>⌄</span></summary><div class="rules-content"><p>الكرات 1 و15 تدخل فقط بالجيبين الوسطين، والثانية لازم تدخل بالجيب الوسطي المقابل. إذا دخلت بجيب زاوية ترجع الكرة المرقمة وراء خط البداية، والبيضاء تبقى بمكانها.</p><p>دخول البيضاء بجيب يعني تعاد خلف خط البداية فقط. أما لمس كرة الخصم أولاً أو إدخال كرة الخصم فهو فاول والبيضاء تبقى بمكانها ويُغيَّر الدور.</p><p>الكرة السوداء 8 تحتاج «توب»؛ اختار جيبها قبل التسديد. دخولها في جيب آخر خسارة. توزيع المجموعات 1–7 / 9–15 واستمرار الدور عند إدخال كرتك مطبقان مؤقتاً لحين تأكيد بقية القوانين.</p></div></details>
-  </main>
-  <footer class="site-footer"><span>© 2026 بريالدو العراقي</span><span>صناعة <b>جعفر ماجد</b> 🇮🇶</span></footer>
-</div>
-<div id="resultModal" class="modal" hidden><div class="modal-card"><span class="modal-crown" id="resultEmoji">🏆</span><div class="eyebrow">MATCH COMPLETE</div><h2 id="resultTitle">انتهت المباراة</h2><p id="resultBody"></p><button class="btn primary" id="againBtn" type="button">العب مباراة ثانية ←</button><button class="btn subtle" id="menuBtn" type="button">العودة للقائمة</button></div></div>
+    </div>
+  </section>
+
+  <div id="rotateOverlay" class="rotate-overlay" hidden>
+    <div class="phone-rotate-icon" aria-hidden="true">▣</div>
+    <h2>لف موبايلك بالعرض 🎱</h2>
+    <p>حتى تظهر الطاولة كبيرة وواضحة وتلعب مثل ألعاب البليارد الحقيقية، استخدم الوضع الأفقي.</p>
+    <button id="rotateBtn" type="button" class="action-btn">فتح ملء الشاشة</button>
+  </div>
+
+  <div id="resultModal" class="modal" hidden>
+    <div class="modal-card chrome-card">
+      <div id="resultEmoji" class="modal-emoji">🏆</div>
+      <h2 id="resultTitle">انتهت المباراة</h2>
+      <p id="resultBody"></p>
+      <div class="modal-actions">
+        <button class="action-btn" id="againBtn" type="button">إعادة اللعب</button>
+        <button class="subtle-btn" id="menuBtn" type="button">القائمة الرئيسية</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
