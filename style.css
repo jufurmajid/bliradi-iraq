@@ -146,3 +146,17 @@ body.playing-mode{height:100dvh;overflow:hidden}
   .rotate-overlay button{width:min(330px,90%)}
 }
 @media(orientation:landscape){.rotate-overlay{display:none!important}}
+
+/* Pull-to-shoot rail, v0.5 */
+.pull-rail{width:100%;flex:1;min-height:108px;display:flex;align-items:stretch;justify-content:center;position:relative;cursor:grab;touch-action:none;user-select:none;outline-offset:2px}
+.pull-rail.pulling{cursor:grabbing}
+.pull-rail.disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
+.pull-track{position:absolute;top:11px;bottom:46px;width:19px;border-radius:14px;background:linear-gradient(90deg,#050b17,#1e2d42 50%,#070e1a);border:2px solid #8091ae;box-shadow:inset 0 2px 7px #0009,0 0 0 3px #0a1528}
+.pull-fill{position:absolute;top:0;left:1px;right:1px;height:0;background:linear-gradient(180deg,#ffe5aa,#d18c25);border-radius:10px;box-shadow:0 0 9px #dba34466}
+.pull-grip{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);height:33px;width:39px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(180deg,#f9e8cb,#af8c5a);border:2px solid #f9f0dc;color:#7d5626;box-shadow:0 3px 9px #0008;font-size:13px;font-weight:900;pointer-events:none}
+.pull-rail.pulling .pull-grip{box-shadow:0 0 14px #e8bc6588,0 3px 9px #0008}
+.pull-hint{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:10px;line-height:1.25;color:#fee0a1;font-weight:900;pointer-events:none}
+.power-readout{white-space:nowrap;min-height:20px;font-size:13px}
+.shot-help{display:grid;place-items:center;text-align:center;border:1px solid #e0ae5944;color:#ffdfa0;background:#4c39234d;border-radius:11px;font-size:12px;font-weight:900;line-height:1.55;padding:4px 6px;min-width:0}
+@media(max-width:1000px) and (orientation:landscape){.pull-track{top:8px;bottom:33px;width:15px}.pull-grip{height:25px;width:31px;border-radius:8px}.pull-hint{font-size:8px}.pull-rail{min-height:70px}.shot-help{font-size:10px;padding:3px}.power-readout{font-size:10px}}
+@media(max-width:700px) and (orientation:portrait){.pull-hint{font-size:8px}.shot-help{font-size:9px}}
