@@ -1,0 +1,27 @@
+; Briyaldo Iraqi — Godot 4.5 native Android project
+config_version=5
+
+[application]
+config/name="بريالدو العراقي"
+run/main_scene="res://scenes/main.tscn"
+config/description="بريالدو عراقي — لعبة بليارد ضد الكمبيوتر"
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/handheld/orientation=0
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+environment/defaults/default_clear_color=Color(0.039, 0.061, 0.109, 1)
+
+[physics]
+common/physics_ticks_per_second=60
+
+[input_devices]
+pointing/emulate_mouse_from_touch=true
