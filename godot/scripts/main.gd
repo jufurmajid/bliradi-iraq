@@ -59,6 +59,12 @@ func _label(text: String, font_size: int = 18, color: Color = WHITE, align: Hori
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_font_size_override("font_size", font_size)
+	# No wrapping by default: headers must never collapse into one-letter columns.
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	return label
+
+func _wrapped_label(text: String, font_size: int = 18, color: Color = WHITE, align: HorizontalAlignment = HORIZONTAL_ALIGNMENT_RIGHT) -> Label:
+	var label := _label(text, font_size, color, align)
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return label
 
@@ -112,27 +118,33 @@ func _build_menu() -> void:
 	menu_screen = Control.new()
 	menu_screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(menu_screen)
-	var frame := _margin(menu_screen, 40, 22, 40, 28)
-	var vbox := _column(frame, 22)
+	var frame := _margin(menu_screen, 26, 15, 26, 18)
+	var vbox := _column(frame, 10)
 	var header := _row(vbox, 16)
-	header.add_child(_label("🎱  بريالدو العراقي", 29, GOLD))
+	header.add_child(_label("🎱  بريالدو العراقي", 27, GOLD))
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(spacer)
-	header.add_child(_label("IRAQI BILLIARDS  •  GODOT EDITION", 15, MUTED, HORIZONTAL_ALIGNMENT_LEFT))
+	header.add_child(_label("IRAQI BILLIARDS  •  GODOT EDITION", 13, MUTED, HORIZONTAL_ALIGNMENT_LEFT))
 	var content := _row(vbox, 24)
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var left := _frame(content)
 	left.size_flags_stretch_ratio = .95
-	var intro := _column(left, 14)
-	intro.add_child(_label("العب البريالدو العراقي", 39, WHITE))
-	intro.add_child(_label("تحدّي الكمبيوتر   •   قوانين عراقية   •   بدون إنترنت", 17, GOLD))
-	var desc := _label("طاولة بليارد حقيقية داخل محرك Godot، لمس وتصويب، ومسطرّة تسديد بالسحب والإفلات. طور اللعب الفردي بالبداية، وبعدها الأونلاين.", 17, MUTED)
+	# Scroll safely on compact landscape displays instead of overflowing below the screen.
+	var intro_scroll := ScrollContainer.new()
+	intro_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	intro_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	intro_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	left.add_child(intro_scroll)
+	var intro := _column(intro_scroll, 9)
+	intro.add_child(_label("العب البريالدو العراقي", 31, WHITE))
+	intro.add_child(_wrapped_label("تحدّي الكمبيوتر   •   قوانين عراقية   •   بدون إنترنت", 15, GOLD))
+	var desc := _wrapped_label("طاولة بليارد داخل محرك Godot، تصويب باللمس وتسديد بسحب المسطرة وإفلاتها. اللعب ضد الكمبيوتر حالياً.", 15, MUTED)
 	intro.add_child(desc)
 	var gap := Control.new()
-	gap.custom_minimum_size.y = 15
+	gap.custom_minimum_size.y = 4
 	intro.add_child(gap)
-	intro.add_child(_label("مستوى الكمبيوتر", 22, WHITE))
+	intro.add_child(_label("مستوى الكمبيوتر", 20, WHITE))
 	var difficulties := _row(intro, 8)
 	for i in range(3):
 		var btn := _button(["سهل", "متوسط", "محترف"][i], i == 1, 17)
@@ -141,7 +153,7 @@ func _build_menu() -> void:
 		difficulty_buttons.append(btn)
 		btn.pressed.connect(_set_difficulty.bind(i))
 	var start := _button("ابدأ المباراة  ◀", true, 24)
-	start.custom_minimum_size.y = 78
+	start.custom_minimum_size.y = 64
 	intro.add_child(start)
 	start.pressed.connect(_start_match)
 	intro.add_child(_label("مصمم للأندرويد — يفضّل اللعب بالعرض", 14, MUTED))
@@ -238,7 +250,7 @@ func _build_game() -> void:
 	action_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
 	var actions := _column(action_panel, 10)
 	actions.add_child(_label("قوانين بريالدو", 18, GOLD, HORIZONTAL_ALIGNMENT_CENTER))
-	actions.add_child(_label("اختيار التوب للسوداء", 14, WHITE, HORIZONTAL_ALIGNMENT_CENTER))
+	actions.add_child(_wrapped_label("اختيار التوب للسوداء", 14, WHITE, HORIZONTAL_ALIGNMENT_CENTER))
 	top_controls = GridContainer.new()
 	top_controls.columns = 2
 	actions.add_child(top_controls)
@@ -248,7 +260,7 @@ func _build_game() -> void:
 		top_controls.add_child(top)
 		top_buttons.append(top)
 		top.pressed.connect(_on_call_pocket.bind(i))
-	actions.add_child(_label("الكرة 1 و15 فقط في الجيبين الوسطية", 13, MUTED, HORIZONTAL_ALIGNMENT_CENTER))
+	actions.add_child(_wrapped_label("الكرة 1 و15 فقط في الجيبين الوسطية", 13, MUTED, HORIZONTAL_ALIGNMENT_CENTER))
 	var filler := Control.new()
 	filler.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	actions.add_child(filler)
@@ -258,7 +270,7 @@ func _build_game() -> void:
 
 	var foot := _frame(stack, false)
 	foot.custom_minimum_size.y = 52
-	message_label = _label("حدد التصويب ثم اسحب مسطرة القوة واتركها", 16, WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	message_label = _wrapped_label("حدد التصويب ثم اسحب مسطرة القوة واتركها", 16, WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 	foot.add_child(message_label)
 
 func _build_result() -> void:
@@ -278,7 +290,7 @@ func _build_result() -> void:
 	var stack := _column(box, 15)
 	end_title = _label("انتهت المباراة", 34, GOLD, HORIZONTAL_ALIGNMENT_CENTER)
 	stack.add_child(end_title)
-	end_body = _label("", 18, WHITE, HORIZONTAL_ALIGNMENT_CENTER)
+	end_body = _wrapped_label("", 18, WHITE, HORIZONTAL_ALIGNMENT_CENTER)
 	stack.add_child(end_body)
 	var replay := _button("العب مرة ثانية", true, 20)
 	stack.add_child(replay)

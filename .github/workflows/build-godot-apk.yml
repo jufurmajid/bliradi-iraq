@@ -8,7 +8,7 @@ on:
       - '.github/workflows/build-godot-apk.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   android-debug:
@@ -65,6 +65,10 @@ jobs:
           if grep -E 'SCRIPT ERROR:|Parse Error:|Failed to load script' /tmp/briyaldo-import.log; then
             exit 1
           fi
+      - name: Check Android-sized menu layout
+        run: |
+          godot --headless --path . --script res://tests/menu_layout.gd 2>&1 | tee /tmp/briyaldo-layout.log
+          grep -q MENU_LAYOUT_OK /tmp/briyaldo-layout.log
       - name: Smoke test native game launch
         run: |
           godot --headless --path . --quit-after 40 2>&1 | tee /tmp/briyaldo-smoke.log
@@ -83,3 +87,18 @@ jobs:
           name: Briyaldo-Iraqi-Godot-Android-APK
           path: godot/build/briyaldo-iraq-debug.apk
           if-no-files-found: error
+      - name: Publish external APK download
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp build/briyaldo-iraq-debug.apk build/briyaldo-iraq-v0.1.1-debug.apk
+          TAG=v0.1.1-ui-fix
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" build/briyaldo-iraq-v0.1.1-debug.apk --clobber
+          else
+            gh release create "$TAG" build/briyaldo-iraq-v0.1.1-debug.apk \
+              --target "$GITHUB_SHA" \
+              --title 'بريالدو العراقي v0.1.1 — إصلاح شاشة البداية' \
+              --notes 'نسخة تجريبية للأندرويد: إصلاح انضغاط نصوص القائمة بشكل عمودي، تحسين توزيع الواجهة على الشاشة، والاحتفاظ بطور اللعب ضد الكمبيوتر.'
+          fi

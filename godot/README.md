@@ -40,3 +40,8 @@
 النسخة **نواة أصلية قابلة للتطوير** وليست بعد لعبة ثلاثية الأبعاد أو نسخة نهائية متقنة الفيزياء. لم نختبرها على هاتف فعلي ضمن بيئة البناء، ويجب تجربة اصطدام الكرات والفاولات والأداء قبل وصفها كنسخة جاهزة للنشر العام. طور لاعب ضد لاعب أونلاين غير موجود حالياً.
 
 صناعة **جعفر ماجد**.
+
+
+## Android UI patch v0.1.1
+
+Fixed the menu headline and English wordmark shrinking to letter-wide columns on some Android screens. Only body descriptions wrap; the intro panel can scroll on smaller displays. A Godot CI scene-layout check guards against regression. After a successful GitHub Actions build, a public test APK is published at [GitHub Releases](https://github.com/jufurmajid/bliradi-iraq/releases/tag/v0.1.1-ui-fix).
