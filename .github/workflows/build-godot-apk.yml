@@ -65,6 +65,12 @@ jobs:
           if grep -E 'SCRIPT ERROR:|Parse Error:|Failed to load script' /tmp/briyaldo-import.log; then
             exit 1
           fi
+      - name: Smoke test native game launch
+        run: |
+          godot --headless --path . --quit-after 40 2>&1 | tee /tmp/briyaldo-smoke.log
+          if grep -E 'SCRIPT ERROR:|Invalid call\\.|Attempt to call|ERROR:.*script' /tmp/briyaldo-smoke.log; then
+            exit 1
+          fi
       - name: Export debug APK
         run: |
           mkdir -p build
