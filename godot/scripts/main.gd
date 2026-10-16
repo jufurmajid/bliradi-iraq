@@ -323,7 +323,7 @@ func _refresh_hud() -> void:
 	bot_group_label.text = _group_name(table.own_group(1))
 	human_balls_label.text = _ball_progress(0)
 	bot_balls_label.text = _ball_progress(1)
-	var can_call := table.can_human_shoot() and table.needs_top(0)
+	var can_call: bool = table.can_human_shoot() and table.needs_top(0)
 	for i in range(top_buttons.size()):
 		top_buttons[i].disabled = not can_call
 		top_buttons[i].modulate = GOLD if table.called_pocket == i else WHITE
