@@ -224,10 +224,10 @@ func _integrate(step: float) -> void:
 			var overlap := BALL_R * 2.0 - length
 			a["pos"] -= normal * overlap * .5
 			b["pos"] += normal * overlap * .5
-			var approaching := (a["vel"] - b["vel"]).dot(normal)
+			var approaching: float = (a["vel"] - b["vel"]).dot(normal)
 			if approaching <= 0.0:
 				continue
-			var impulse := approaching * .96
+			var impulse: float = approaching * .96
 			a["vel"] -= normal * impulse
 			b["vel"] += normal * impulse
 			if shot["first"] == -1 and (a["id"] == 0 or b["id"] == 0):
@@ -378,12 +378,12 @@ func _ai_shoot() -> void:
 				continue
 			var to_pocket: Vector2 = (POCKETS[pi] - target["pos"]).normalized()
 			var ghost: Vector2 = target["pos"] - to_pocket * (BALL_R * 2.0)
-			var line := ghost - cue["pos"]
+			var line: Vector2 = ghost - cue["pos"]
 			if line.length_squared() < 100.0:
 				continue
 			if not _path_clear(cue["pos"], ghost, id, 0) or not _path_clear(target["pos"], POCKETS[pi], id, 0):
 				continue
-			var score := 2000.0 - line.length() - target["pos"].distance_to(POCKETS[pi]) * .32
+			var score: float = 2000.0 - line.length() - target["pos"].distance_to(POCKETS[pi]) * .32
 			if score > best_score:
 				best_score = score
 				best = line.normalized()
@@ -404,7 +404,7 @@ func _ai_shoot() -> void:
 	notice.emit("الكمبيوتر يسدد...")
 
 func _path_clear(start: Vector2, finish: Vector2, ignore_a: int, ignore_b: int) -> bool:
-	var delta := finish - start
+	var delta: Vector2 = finish - start
 	var dist_sq := delta.length_squared()
 	if dist_sq < 1.0:
 		return true
@@ -457,7 +457,7 @@ func _set_aim(pointer_pos: Vector2) -> void:
 	var cue := _find_ball(0)
 	if cue.is_empty() or not cue["alive"]:
 		return
-	var delta := _to_logical(pointer_pos) - cue["pos"]
+	var delta: Vector2 = _to_logical(pointer_pos) - cue["pos"]
 	if delta.length_squared() > 20.0:
 		aim = delta.normalized()
 		queue_redraw()
